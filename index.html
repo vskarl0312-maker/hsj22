@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ㅎㅅㅈ - 수학 맞춤 학습지</title>
+    
+    <!-- PWA / 모바일 앱 설정 -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#4f46e5">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3771/3771518.png">
+
+    <!-- Pretendard, FontAwesome, KaTeX -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent; /* 모바일 터치 하이라이트 제거 */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        .no-print { display: block; }
+
+        /* 모바일 상단 네비게이션 헤더 */
+        .app-header {
+            background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+            color: white;
+            padding: 12px 16px;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 960px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .logo-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            font-size: 18px;
+            font-weight: 900;
+            padding: 4px 10px;
+            border-radius: 10px;
+            letter-spacing: 1px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .brand-text h1 {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        /* 탭 버튼 */
+        .tab-nav {
+            display: flex;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 3px;
+            border-radius: 10px;
+            gap: 2px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.8);
+            border: none;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tab-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .badge-count {
+            background: var(--accent-amber);
+            color: #000;
+            font-size: 10px;
+            padding: 1px 5px;
+            border-radius: 8px;
+            font-weight: 800;
+        }
+
+        /* 컨테이너 */
+        .app-container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        /* 모바일 그리드 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .card-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 18px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .card-title i { color: var(--primary); }
+
+        .form-group { margin-bottom: 12px; }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .select-input, .text-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background-color: #f8fafc;
+            font-size: 14px;
+            color: var(--text-main);
+            outline: none;
+        }
+
+        /* 터치 반응형 선택 버튼 */
+        .option-btn-grid { display: grid; gap: 6px; }
+        .grid-5 { grid-template-columns: repeat(5, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+        .opt-btn {
+            padding: 10px 0;
+            border: 1px solid var(--border-color);
+            background: #f8fafc;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .opt-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* 모바일 최적화 버튼 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            touch-action: manipulation;
+        }
+
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-secondary { background-color: #0284c7; color: white; }
+        .btn-amber { background-color: var(--accent-amber); color: white; }
+        .btn-dark { background-color: #1e293b; color: white; }
+        .btn-green { background-color: var(--accent-green); color: white; }
+        .btn-reset { background-color: #ef4444; color: white; }
+
+        .btn:disabled {
+            background-color: #cbd5e1 !important;
+            color: #94a3b8 !important;
+            cursor: not-allowed !important;
+        }
+
+        /* 업로드 박스 */
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+            background: #f8fafc;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        /* 학습지 영역 */
+        .worksheet-container {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .worksheet-header {
+            border-bottom: 2px solid var(--text-main);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .worksheet-title h2 { font-size: 18px; font-weight: 800; }
+        .worksheet-title p { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+        .student-info { 
+            display: flex; 
+            gap: 16px; 
+            font-size: 13px; 
+            font-weight: 600; 
+            margin-top: 10px;
+        }
+        .student-info div { border-bottom: 1px solid var(--text-main); min-width: 60px; }
+
+        .problems-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .problems-grid { grid-template-columns: 1fr 1fr; gap: 24px 36px; }
+        }
+
+        .problem-card { break-inside: avoid; }
+        .problem-number { font-weight: 800; font-size: 15px; color: var(--primary); margin-bottom: 4px; }
+        .problem-text { font-size: 14px; line-height: 1.5; margin-bottom: 8px; }
+
+        .options-grid { display: flex; flex-direction: column; gap: 4px; }
+        .option-item { font-size: 13px; color: #334155; }
+
+        /* 답지 */
+        .answer-section {
+            background: #0f172a;
+            color: white;
+            border-radius: 14px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .answer-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            margin: 10px 0 16px 0;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .answer-box {
+            background: #1e293b;
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+        }
+
+        .answer-box .num { color: #94a3b8; font-size: 10px; display: block; }
+        .answer-box .ans { color: #f59e0b; font-weight: 800; font-size: 14px; }
+
+        /* 액션 버튼 (모바일 스택형) */
+        .action-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        @media (min-width: 768px) {
+            .action-bar { flex-direction: row; justify-content: space-between; }
+        }
+
+        .hidden { display: none !important; }
+
+        /* 보관함 */
+        .archive-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .archive-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .no-print { display: none !important; }
+            .worksheet-container { border: none; box-shadow: none; padding: 0; }
+            .problems-grid { grid-template-columns: 1fr 1fr; gap: 20px 30px; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="app-header no-print">
+    <div class="header-content">
+        <div class="brand-logo" onclick="switchTab('maker')">
+            <div class="logo-badge">ㅎㅅㅈ</div>
+            <div class="brand-text">
+                <h1>수학 학습지</h1>
+            </div>
+        </div>
+
+        <nav class="tab-nav">
+            <button id="tab-maker-btn" class="tab-btn active" onclick="switchTab('maker')">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> 생성
+            </button>
+            <button id="tab-archive-btn" class="tab-btn" onclick="switchTab('archive')">
+                <i class="fa-solid fa-box-archive"></i> 보관함 
+                <span id="archive-count" class="badge-count">0</span>
+            </button>
+        </nav>
+    </div>
+</header>
+
+<div class="app-container">
+
+    <main id="view-maker">
+        <!-- API 키 영역 -->
+        <div class="card no-print" style="margin-bottom: 16px; background: #f8fafc;">
+            <details id="api-key-details">
+                <summary style="cursor: pointer; font-weight: 700; color: var(--primary); outline: none;">
+                    <i class="fa-solid fa-key"></i> Gemini API Key 설정
+                </summary>
+                <div style="margin-top: 10px;">
+                    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">
+                        * 입력된 키는 본인 기기에만 안전하게 저장됩니다.
+                    </p>
+                    <input type="password" id="api-key-input" class="text-input" placeholder="Gemini API Key 입력" onchange="saveApiKey()">
+                </div>
+            </details>
+        </div>
+
+        <div class="card-grid no-print">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>학습 조건 선택</span>
+                </div>
+
+                <div class="form-group">
+                    <label>1. 학년 선택</label>
+                    <select id="grade-select" class="select-input" onchange="updateUnits()">
+                        <option value="" disabled selected>-- 학년 선택 --</option>
+                        <option value="mid1">중학교 1학년</option>
+                        <option value="mid2">중학교 2학년</option>
+                        <option value="mid3">중학교 3학년</option>
+                        <option value="high1">고등학교 1학년 (공통수학)</option>
+                        <option value="high2">고등학교 2~3학년 (선택과목)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>2. 과목 및 단원 선택</label>
+                    <select id="unit-select" class="select-input" onchange="validateSelections()">
+                        <option value="" disabled selected>-- 학년을 먼저 선택하세요 --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>3. 문제 수 선택</label>
+                    <div class="option-btn-grid grid-5">
+                        <button type="button" class="opt-btn count-btn" onclick="setCount(10)">10</button>
+                        <button type="button" class="opt-btn count-btn" onclick="setCount(20)">20</button>
+                        <button type="button" class="opt-btn count-btn" onclick="setCount(30)">30</button>
+                        <button type="button" class="opt-btn count-btn" onclick="setCount(40)">40</button>
+                        <button type="button" class="opt-btn count-btn" onclick="setCount(50)">50</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>4. 난이도 선택</label>
+                    <div class="option-btn-grid grid-3">
+                        <button type="button" class="opt-btn diff-btn" onclick="setDifficulty('easy')">쉬움</button>
+                        <button type="button" class="opt-btn diff-btn" onclick="setDifficulty('medium')">중간</button>
+                        <button type="button" class="opt-btn diff-btn" onclick="setDifficulty('hard')">어려움</button>
+                    </div>
+                </div>
+
+                <button id="generate-btn" class="btn btn-primary" onclick="generateWorksheet()" disabled>
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> <span id="generate-btn-text">항목을 선택해주세요</span>
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <i class="fa-solid fa-camera"></i>
+                    <span>문제 사진 촬영 및 분석</span>
+                </div>
+
+                <div class="upload-area" onclick="document.getElementById('photo-input').click()">
+                    <i class="fa-solid fa-camera" style="font-size: 24px; color: var(--text-muted); margin-bottom: 4px;"></i>
+                    <p id="upload-label" style="font-size: 12px; color: var(--text-muted);">카메라로 문제를 찍거나 선택하세요</p>
+                    <!-- 모바일 카메라 직접 연결 capture 속성 적용 -->
+                    <input type="file" id="photo-input" style="display: none;" accept="image/*" capture="environment" onchange="handleImageUpload(event)">
+                </div>
+
+                <button class="btn btn-secondary" onclick="generateSimilarFromPhoto()">
+                    <i class="fa-solid fa-robot"></i> 유사 문제 만들어주기
+                </button>
+            </div>
+        </div>
+
+        <!-- 학습지 출력 -->
+        <div id="worksheet" class="worksheet-container hidden">
+            <div class="worksheet-header">
+                <div class="worksheet-title">
+                    <h2 id="sheet-title-text">[ㅎㅅㅈ] 수학 학습지</h2>
+                    <p id="sheet-subtitle-text">단원: - | 객관식 -문항</p>
+                </div>
+                <div class="student-info">
+                    <span>이름: <div></div></span>
+                    <span>점수: <div></div></span>
+                </div>
+            </div>
+
+            <div id="problems-container" class="problems-grid"></div>
+
+            <div class="action-bar no-print">
+                <div style="display: flex; gap: 6px;">
+                    <button class="btn btn-reset" onclick="generateWorksheet()">
+                        <i class="fa-solid fa-rotate-right"></i> 다시 생성
+                    </button>
+                    <button class="btn btn-amber" onclick="saveToArchive()">
+                        <i class="fa-solid fa-bookmark"></i> 보관함 저장
+                    </button>
+                </div>
+
+                <div style="display: flex; gap: 6px;">
+                    <button class="btn btn-dark" onclick="toggleAnswerKey()">
+                        <i class="fa-solid fa-key"></i> <span id="answer-toggle-text">답지/해설</span>
+                    </button>
+                    <button class="btn btn-green" onclick="window.print()">
+                        <i class="fa-solid fa-print"></i> 인쇄 / PDF
+                    </button>
+                </div>
+            </div>
+
+            <div id="answer-key-section" class="answer-section hidden no-print">
+                <h3 style="color: #f59e0b; margin-bottom: 8px;"><i class="fa-solid fa-check-double"></i> 정답표</h3>
+                <div id="quick-answers-grid" class="answer-grid"></div>
+                <h3 style="color: #f59e0b; margin-bottom: 8px;"><i class="fa-solid fa-book"></i> 문제 해설</h3>
+                <div id="detailed-explanations" style="display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: #cbd5e1;"></div>
+            </div>
+        </div>
+    </main>
+
+    <section id="view-archive" class="hidden">
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2><i class="fa-solid fa-box-archive" style="color: var(--accent-amber);"></i> 내 문제집 보관함</h2>
+                <button class="btn btn-reset" onclick="clearAllArchive()" style="width: auto; padding: 6px 10px; font-size: 11px;">전체 삭제</button>
+            </div>
+            <div id="archive-list" class="archive-grid"></div>
+            <div id="archive-empty" style="text-align: center; padding: 30px 0; color: var(--text-muted);">
+                <i class="fa-solid fa-folder-open" style="font-size: 32px; margin-bottom: 8px;"></i>
+                <p>저장된 학습지가 없습니다.</p>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    const unitData = {
+        mid1: [{ id: 'm1_prime', name: '1. 소인수분해와 정수·유리수' }, { id: 'm1_eq', name: '2. 문자와 식 (일차방정식)' }, { id: 'm1_coord', name: '3. 좌표평면과 정비례/반비례' }, { id: 'm1_geo', name: '4. 기본 도형과 입체도형' }],
+        mid2: [{ id: 'm2_decimal', name: '1. 유리수와 순환소수' }, { id: 'm2_ineq', name: '2. 식의 계산과 일차부등식' }, { id: 'm2_sys', name: '3. 연립일차방정식' }, { id: 'm2_func', name: '4. 일차함수와 그 그래프' }],
+        mid3: [{ id: 'm3_sqrt', name: '1. 실수와 그 연산 (제곱근)' }, { id: 'm3_factor', name: '2. 인수분해와 이차방정식' }, { id: 'm3_quad', name: '3. 이차함수와 그 그래프' }, { id: 'm3_trig', name: '4. 삼각비와 원의 성질' }],
+        high1: [{ id: 'h1_poly', name: '1. 다항식의 연산과 인수분해' }, { id: 'h1_complex', name: '2. 복소수와 이차방정식' }, { id: 'h1_line', name: '3. 도형의 방정식' }, { id: 'h1_set', name: '4. 집합과 명제' }],
+        high2: [{ id: 'h2_log', name: '1. [수학Ⅰ] 지수함수와 로그함수' }, { id: 'h2_sin', name: '2. [수학Ⅰ] 삼각함수와 수열' }, { id: 'h2_limit', name: '3. [수학Ⅱ] 함수의 극한과 미적분' }, { id: 'h2_stat', name: '4. [확률과 통계] 확률과 통계적 추정' }]
+    };
+
+    let selectedGrade = null, selectedUnit = null, selectedCount = null, selectedDifficulty = null, currentWorkbook = null, uploadedImageBase64 = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedKey = localStorage.getItem('gemini_api_key');
+        if (savedKey) document.getElementById('api-key-input').value = savedKey;
+        else {
+            const details = document.getElementById('api-key-details');
+            if (details) details.open = true;
+        }
+        updateArchiveCount();
+    });
+
+    function saveApiKey() {
+        const key = document.getElementById('api-key-input').value.trim();
+        localStorage.setItem('gemini_api_key', key);
+    }
+
+    function updateUnits() {
+        const gradeSelect = document.getElementById('grade-select');
+        const unitSelect = document.getElementById('unit-select');
+        selectedGrade = gradeSelect.value;
+        unitSelect.innerHTML = '<option value="" disabled selected>-- 단원 선택 --</option>';
+        (unitData[selectedGrade] || []).forEach(u => {
+            const opt = document.createElement('option');
+            opt.value = u.id; opt.textContent = u.name;
+            unitSelect.appendChild(opt);
+        });
+        selectedUnit = null; validateSelections();
+    }
+
+    function setCount(count) {
+        selectedCount = count;
+        document.querySelectorAll('.count-btn').forEach(btn => btn.classList.toggle('active', parseInt(btn.innerText) === count));
+        validateSelections();
+    }
+
+    function setDifficulty(diff) {
+        selectedDifficulty = diff;
+        document.querySelectorAll('.diff-btn').forEach(btn => {
+            const text = btn.innerText;
+            btn.classList.toggle('active', (diff === 'easy' && text === '쉬움') || (diff === 'medium' && text === '중간') || (diff === 'hard' && text === '어려움'));
+        });
+        validateSelections();
+    }
+
+    function validateSelections() {
+        selectedUnit = document.getElementById('unit-select').value || null;
+        const btn = document.getElementById('generate-btn');
+        const btnText = document.getElementById('generate-btn-text');
+
+        if (selectedGrade && selectedUnit && selectedCount && selectedDifficulty) {
+            btn.disabled = false;
+            let diffKo = selectedDifficulty === 'easy' ? '쉬움' : (selectedDifficulty === 'medium' ? '중간' : '어려움');
+            btnText.innerText = `${selectedCount}문제 생성 (${diffKo})`;
+        } else {
+            btn.disabled = true; btnText.innerText = '항목을 선택해주세요';
+        }
+    }
+
+    function switchTab(tab) {
+        document.getElementById('view-maker').classList.toggle('hidden', tab !== 'maker');
+        document.getElementById('view-archive').classList.toggle('hidden', tab !== 'archive');
+        document.getElementById('tab-maker-btn').classList.toggle('active', tab === 'maker');
+        document.getElementById('tab-archive-btn').classList.toggle('active', tab === 'archive');
+        if (tab === 'archive') renderArchiveList();
+    }
+
+    async function generateMathQuestionsAI(gradeText, unitText, count, diff) {
+        const apiKey = localStorage.getItem('gemini_api_key');
+        if (!apiKey) {
+            alert('Gemini API Key를 먼저 입력해주세요.');
+            document.getElementById('api-key-details').open = true;
+            return null;
+        }
+
+        const prompt = `대상: ${gradeText}, 단원: ${unitText}, 난이도: ${diff}, 개수: ${count}개. 한국 교육과정에 따른 5지선다형 수학 문제 ${count}개를 생성하세요. 수식은 LaTeX($...$)를 사용하고, JSON 형식만 응답하세요: [{"id": 1, "question": "...", "options": ["...", "...", "...", "...", "..."], "answer": 1, "explanation": "..."}]`;
+
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json" } })
+            });
+
+            const data = await response.json();
+            if (data.error) throw new Error(data.error.message);
+            return JSON.parse(data.candidates[0].content.parts[0].text);
+        } catch (err) {
+            alert('문제 생성 실패: ' + err.message);
+            return null;
+        }
+    }
+
+    async function generateWorksheet() {
+        if (!selectedGrade || !selectedUnit || !selectedCount || !selectedDifficulty) return;
+        const btn = document.getElementById('generate-btn');
+        const btnText = document.getElementById('generate-btn-text');
+        btn.disabled = true; btnText.innerText = "생성 중...";
+
+        const gradeText = document.getElementById('grade-select').options[document.getElementById('grade-select').selectedIndex].text;
+        const unitText = document.getElementById('unit-select').options[document.getElementById('unit-select').selectedIndex]?.text || "";
+        const diffKo = selectedDifficulty === 'easy' ? '쉬움' : (selectedDifficulty === 'medium' ? '중간' : '어려움');
+
+        const questions = await generateMathQuestionsAI(gradeText, unitText, selectedCount, diffKo);
+        btn.disabled = false; btnText.innerText = `${selectedCount}문제 생성 (${diffKo})`;
+
+        if (!questions) return;
+
+        const now = new Date();
+        currentWorkbook = { id: 'wb_' + Date.now(), grade: gradeText, unit: unitText, count: selectedCount, difficulty: diffKo, date: `${now.getFullYear()}.${now.getMonth() + 1}.${now.getDate()}`, questions: questions };
+        renderWorksheetUI();
+    }
+
+    function handleImageUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            uploadedImageBase64 = evt.target.result.split(',')[1];
+            document.getElementById('upload-label').innerText = `사진 촬영됨: ${file.name}`;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    async function generateSimilarFromPhoto() {
+        if (!uploadedImageBase64) return alert('사진을 먼저 촬영하거나 선택해주세요.');
+        const apiKey = localStorage.getItem('gemini_api_key');
+        if (!apiKey) return alert('API Key를 먼저 입력해주세요.');
+
+        const count = selectedCount || 5;
+        const prompt = `이미지의 수학 문제를 분석하여 유사 문제 ${count}개를 새로 만들어 JSON으로만 응답해주세요.`;
+
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }, { inlineData: { mimeType: "image/jpeg", data: uploadedImageBase64 } }] }],
+                    generationConfig: { responseMimeType: "application/json" }
+                })
+            });
+
+            const data = await response.json();
+            const questions = JSON.parse(data.candidates[0].content.parts[0].text);
+            const now = new Date();
+            currentWorkbook = { id: 'wb_' + Date.now(), grade: "사진 분석", unit: "유사 문제", count: questions.length, difficulty: "맞춤", date: `${now.getFullYear()}.${now.getMonth() + 1}.${now.getDate()}`, questions: questions };
+            renderWorksheetUI();
+        } catch (err) { alert('사진 분석 실패: ' + err.message); }
+    }
+
+    function renderWorksheetUI() {
+        if (!currentWorkbook) return;
+        document.getElementById('sheet-title-text').innerText = `[ㅎㅅㅈ] ${currentWorkbook.grade}`;
+        document.getElementById('sheet-subtitle-text').innerText = `단원: ${currentWorkbook.unit} | ${currentWorkbook.count}문항`;
+
+        const container = document.getElementById('problems-container');
+        container.innerHTML = '';
+        const circles = ['①', '②', '③', '④', '⑤'];
+
+        currentWorkbook.questions.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'problem-card';
+            card.innerHTML = `
+                <div class="problem-number">${p.id}.</div>
+                <div class="problem-text">${p.question}</div>
+                <div class="options-grid">
+                    ${p.options.map((opt, idx) => `<div class="option-item">${circles[idx]} ${opt}</div>`).join('')}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+
+        renderAnswerKeyUI();
+        renderMathInElement(document.getElementById('worksheet'), { delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}], throwOnError: false });
+        document.getElementById('worksheet').classList.remove('hidden');
+        document.getElementById('answer-key-section').classList.add('hidden');
+    }
+
+    function renderAnswerKeyUI() {
+        const grid = document.getElementById('quick-answers-grid');
+        const expList = document.getElementById('detailed-explanations');
+        grid.innerHTML = ''; expList.innerHTML = '';
+        const circles = ['①', '②', '③', '④', '⑤'];
+
+        currentWorkbook.questions.forEach(q => {
+            const ansCircle = circles[q.answer - 1] || q.answer;
+            grid.innerHTML += `<div class="answer-box"><span class="num">${q.id}</span><span class="ans">${ansCircle}</span></div>`;
+            expList.innerHTML += `<div><strong>[${q.id}번] 정답: ${ansCircle}</strong> - ${q.explanation}</div>`;
+        });
+    }
+
+    function toggleAnswerKey() {
+        const section = document.getElementById('answer-key-section');
+        section.classList.toggle('hidden');
+        document.getElementById('answer-toggle-text').innerText = section.classList.contains('hidden') ? "답지/해설" : "답지 접기";
+    }
+
+    function getArchiveData() { return JSON.parse(localStorage.getItem('hsj_math_archive') || '[]'); }
+    function updateArchiveCount() { document.getElementById('archive-count').innerText = getArchiveData().length; }
+
+    function saveToArchive() {
+        if (!currentWorkbook) return;
+        const archive = getArchiveData();
+        if (archive.some(item => item.id === currentWorkbook.id)) return alert('이미 저장된 학습지입니다.');
+        archive.unshift(currentWorkbook);
+        localStorage.setItem('hsj_math_archive', JSON.stringify(archive));
+        updateArchiveCount(); alert('보관함에 저장되었습니다!');
+    }
+
+    function renderArchiveList() {
+        const archive = getArchiveData();
+        const container = document.getElementById('archive-list');
+        container.innerHTML = '';
+        document.getElementById('archive-empty').classList.toggle('hidden', archive.length > 0);
+
+        archive.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'archive-card';
+            card.innerHTML = `
+                <div>
+                    <h3 style="font-size: 14px; font-weight: 700;">${item.grade} - ${item.unit}</h3>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">${item.date} | ${item.count}문항</p>
+                </div>
+                <div style="display: flex; gap: 4px; margin-top: 10px;">
+                    <button class="btn btn-primary" onclick="loadArchiveItem('${item.id}')" style="padding: 6px; font-size: 11px;">열기</button>
+                    <button class="btn btn-reset" onclick="deleteArchiveItem('${item.id}')" style="padding: 6px; font-size: 11px;">삭제</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function loadArchiveItem(id) {
+        const target = getArchiveData().find(item => item.id === id);
+        if (target) { currentWorkbook = target; switchTab('maker'); renderWorksheetUI(); }
+    }
+
+    function deleteArchiveItem(id) {
+        localStorage.setItem('hsj_math_archive', JSON.stringify(getArchiveData().filter(item => item.id !== id)));
+        updateArchiveCount(); renderArchiveList();
+    }
+
+    function clearAllArchive() {
+        if (confirm('전체 삭제하시겠습니까?')) {
+            localStorage.removeItem('hsj_math_archive');
+            updateArchiveCount(); renderArchiveList();
+        }
+    }
+</script>
+</body>
+</html>
